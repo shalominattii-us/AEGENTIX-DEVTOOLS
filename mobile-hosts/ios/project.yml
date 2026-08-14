@@ -1,4 +1,7 @@
 name: AegentixHost
+packages:
+  AegentixMobileHost:
+    path: .
 targets:
   AegentixHost:
     type: application
@@ -6,7 +9,8 @@ targets:
     deploymentTarget: "17.0"
     sources:
       - path: Sources/AegentixHostApp
-      - path: Sources/AegentixMobileHost
+    dependencies:
+      - package: AegentixMobileHost
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: us.shalominattii.aegentix.host

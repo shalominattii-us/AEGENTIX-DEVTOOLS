@@ -60,12 +60,19 @@ public actor AegentixHost {
 
     public func emit(type: String, policy: String = "guardian-required", payload: [String: String]) async throws -> AegentixEnvelope {
         let event = try AegentixEnvelope(nodeId: nodeId, type: type, policy: policy, payload: payload)
-        try await journal.append(event) // event first
+        try await journal.append(event)
+        try await send(event)
+        return event
+    }
+
+    public func send(_ event: AegentixEnvelope) async throws {
         var request = URLRequest(url: endpoint.appendingPathComponent("events"))
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try JSONEncoder().encode(event)
-        _ = try await session.data(for: request)
-        return event
+        let (_, response) = try await session.data(for: request)
+        guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
+            throw URLError(.badServerResponse)
+        }
     }
 }

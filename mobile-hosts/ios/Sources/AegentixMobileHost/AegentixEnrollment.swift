@@ -16,7 +16,7 @@ public final class AegentixEnrollment: @unchecked Sendable {
 
     public func identity() throws -> AegentixNodeIdentity {
         if let data = defaults.data(forKey: key), let identity = try? JSONDecoder().decode(AegentixNodeIdentity.self, from: data) { return identity }
-        let privateKey = Curve25519.Signing.PrivateKey()
+        let privateKey = try AegentixKeychain.signingKey()
         let identity = AegentixNodeIdentity(
             nodeId: "aegentix-ios-\(UUID().uuidString.lowercased())",
             platform: "ios",

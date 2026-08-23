@@ -1,0 +1,25 @@
+name: AEGENTIX Pixel Host
+on:
+  push:
+    paths: ['mobile-hosts/pixel/**']
+  pull_request:
+    paths: ['mobile-hosts/pixel/**']
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '9.1.0'
+      - name: Build debug APK
+        working-directory: mobile-hosts/pixel
+        run: gradle :app:assembleDebug --no-daemon
+      - uses: actions/upload-artifact@v4
+        with:
+          name: aegentix-pixel-debug
+          path: mobile-hosts/pixel/app/build/outputs/apk/debug/*.apk

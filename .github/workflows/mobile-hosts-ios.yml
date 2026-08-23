@@ -1,0 +1,19 @@
+name: AEGENTIX iOS Host
+on:
+  push:
+    paths: ['mobile-hosts/ios/**']
+  pull_request:
+    paths: ['mobile-hosts/ios/**']
+jobs:
+  build:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        working-directory: mobile-hosts/ios
+        run: xcodegen generate
+      - name: Build simulator target
+        working-directory: mobile-hosts/ios
+        run: xcodebuild -project AegentixHost.xcodeproj -scheme AegentixHost -sdk iphonesimulator -configuration Debug build CODE_SIGNING_ALLOWED=NO

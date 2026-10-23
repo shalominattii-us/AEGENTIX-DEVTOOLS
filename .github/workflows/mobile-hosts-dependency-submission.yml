@@ -2,7 +2,14 @@ name: AEGENTIX Mobile Dependency Graph
 on:
   push:
     branches: [main]
-    paths: ['mobile-hosts/pixel/**']
+    paths:
+      - 'mobile-hosts/pixel/**'
+      - '.github/workflows/mobile-hosts-dependency-submission.yml'
+  pull_request:
+    paths:
+      - 'mobile-hosts/pixel/**'
+      - '.github/workflows/mobile-hosts-dependency-submission.yml'
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
@@ -16,4 +23,5 @@ jobs:
           java-version: '17'
       - uses: gradle/actions/dependency-submission@v6
         with:
+          gradle-version: '9.1.0'
           build-root-directory: mobile-hosts/pixel
